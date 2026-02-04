@@ -1,0 +1,105 @@
+{
+    "project": {
+        "id": 1,
+        "name": "Archer Homes 3d",
+        "location": "Kurnool, Andhra Pradesh",
+        "totalArea": "7.5 Acres",
+        "totalPlots": 71,
+        "contact": "9014975206",
+        "description": "Premium residential plots with excellent connectivity and modern amenities."
+    },
+    "svgViewbox": "0 0 1600 900",
+    "plots": [
+        {
+            "id": 22,
+            "number": "22",
+            "status": "Sold",
+            "type": "Residential",
+            "areaSqft": 2400,
+            "pricePerSqft": 1200,
+            "totalPrice": 2880000,
+            "facing": "North",
+            "svgPath": "M1180,330 L1350,380 L1320,490 L1130,420 Z",
+            "centroidX": 1245,
+            "centroidY": 405
+        },
+        {
+            "id": 21,
+            "number": "21",
+            "status": "Available",
+            "type": "Residential",
+            "areaSqft": 1800,
+            "pricePerSqft": 1200,
+            "totalPrice": 2160000,
+            "facing": "East",
+            "svgPath": "M1030,420 L1130,420 L1110,530 L1010,510 Z",
+            "centroidX": 1070,
+            "centroidY": 470
+        },
+        {
+            "id": 20,
+            "number": "20",
+            "status": "Mortgaged",
+            "type": "Commercial",
+            "areaSqft": 3200,
+            "pricePerSqft": 1500,
+            "totalPrice": 4800000,
+            "facing": "West",
+            "svgPath": "M920,480 L1030,445 L1010,510 L1090,620 L960,650 Z",
+            "centroidX": 1000,
+            "centroidY": 540
+        },
+        {
+            "id": 4,
+            "number": "04",
+            "status": "Available",
+            "type": "Residential",
+            "areaSqft": 1500,
+            "pricePerSqft": 1200,
+            "totalPrice": 1800000,
+            "facing": "North",
+            "svgPath": "M1360,390 L1480,430 L1420,550 L1320,490 Z",
+            "centroidX": 1400,
+            "centroidY": 465
+        },
+        {
+            "id": 19,
+            "number": "19",
+            "status": "Tentatively Booked",
+            "type": "Residential",
+            "areaSqft": 1600,
+            "pricePerSqft": 1200,
+            "totalPrice": 1920000,
+            "facing": "East",
+            "svgPath": "M1090,620 L1180,520 L1250,550 L1150,680 Z",
+            "centroidX": 1170,
+            "centroidY": 590
+        },
+        {
+            "id": 5,
+            "number": "05",
+            "status": "Tentatively Booked",
+            "type": "Residential",
+            "areaSqft": 1750,
+            "pricePerSqft": 1200,
+            "totalPrice": 2100000,
+            "facing": "South",
+            "svgPath": "M1150,680 L1250,550 L1420,550 L1400,750 Z",
+            "centroidX": 1300,
+            "centroidY": 650
+        },
+        {
+            "id": 6,
+            "number": "06",
+            "status": "Available",
+            "type": "Residential",
+            "areaSqft": 2000,
+            "pricePerSqft": 1200,
+            "totalPrice": 2400000,
+            "facing": "South",
+            "svgPath": "M960,650 L1090,620 L1150,680 L1080,820 L940,790 Z",
+            "centroidX": 1040,
+            "centroidY": 710
+        }
+    ]
+}

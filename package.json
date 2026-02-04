@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "image-size": "^2.0.2",
+    "puppeteer-core": "^24.36.1"
+  }
+}

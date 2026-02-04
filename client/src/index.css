@@ -1,0 +1,83 @@
+/* Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Poppins', sans-serif;
+  /* Switch to Poppins for that premium feel */
+  background-color: #f3f4f6;
+  color: #1f2937;
+  overflow: hidden;
+  /* Prevent body scroll */
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  @apply bg-white/95 backdrop-blur-md shadow-lg border border-white/20;
+}
+
+/* Plot Styling */
+.plot-polygon {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  stroke: rgba(255, 255, 255, 0.5);
+  stroke-width: 1px;
+}
+
+.plot-polygon:hover {
+  filter: brightness(1.1) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+  stroke: #fff;
+  stroke-width: 2px;
+  z-index: 10;
+}
+
+.plot-polygon.selected {
+  stroke: #ffffff;
+  stroke-width: 3px;
+  filter: brightness(1.2) drop-shadow(0 0 15px rgba(255, 255, 255, 0.6));
+  z-index: 20;
+}
+
+/* Status Pills */
+.status-pill-modern {
+  @apply px-3 py-1 rounded-full text-[11px] font-semibold text-white shadow-sm flex items-center gap-1.5 uppercase tracking-wide;
+}
+
+/* Animations */
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out forwards;
+}
