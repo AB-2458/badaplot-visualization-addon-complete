@@ -29,6 +29,10 @@ export default function AdminDigitize() {
     // Load project and plots from Supabase on mount
     useEffect(() => {
         const loadData = async () => {
+            if (!supabase) {
+                console.error('[Badaplot] Supabase not configured in AdminDigitize.');
+                return;
+            }
             const { data: project } = await supabase
                 .from('projects')
                 .select('id')

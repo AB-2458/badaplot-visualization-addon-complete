@@ -30,6 +30,10 @@ export default function PublicView() {
         let channel;
 
         const loadData = async () => {
+            if (!supabase) {
+                console.error('[Badaplot] Supabase not configured. Cannot load data.');
+                return;
+            }
             const { data: project } = await supabase
                 .from('projects')
                 .select('*')
@@ -110,7 +114,21 @@ export default function PublicView() {
     };
 
     if (!projectData) {
-        return <div className="h-screen w-full flex items-center justify-center">Loading Project...</div>;
+        return (
+            <div className="h-screen w-full flex flex-col items-center justify-center gap-4">
+                {!supabase ? (
+                    <div className="text-center space-y-2">
+                        <p className="text-red-500 font-semibold text-xl">⚠️ Database Not Configured</p>
+                        <p className="text-gray-500">Please set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`</p>
+                    </div>
+                ) : (
+                    <div className="text-center space-y-4">
+                        <div className="w-12 h-12 border-4 border-gray-200 border-t-primary rounded-full animate-spin mx-auto"></div>
+                        <p className="text-gray-600 font-medium">Loading Project...</p>
+                    </div>
+                )}
+            </div>
+        );
     }
 
     return (
