@@ -31,10 +31,10 @@ export default function PlotModal({ plot, project, onClose, onStatusChange }) {
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-border">
                     <div>
-                        <h2 className="text-lg font-bold text-foreground">{project?.name || 'Project'}</h2>
+                        <h2 className="text-lg font-bold text-foreground">BadaPlot.com</h2>
                         <div className="flex items-center gap-3 mt-1">
                             <a href={`tel:${project?.phone}`} className="text-sm text-muted-foreground flex items-center gap-1 hover:text-primary transition-colors">
-                                <Phone className="w-3 h-3" /> {project?.phone || '9014975206'}
+                                <Phone className="w-3 h-3" /> {project?.phone || '9766318880'}
                             </a>
                             <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-emerald flex items-center gap-1 hover:text-emerald/80 transition-colors">
                                 <MessageCircle className="w-3 h-3" /> WhatsApp

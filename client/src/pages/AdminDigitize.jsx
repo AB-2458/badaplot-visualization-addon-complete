@@ -516,7 +516,7 @@ export default function AdminDigitize() {
             {/* Right Panel - Canvas */}
             <div
                 ref={containerRef}
-                className={`flex-1 overflow-hidden bg-gray-950 flex items-center justify-center ${!isDrawing ? 'cursor-grab active:cursor-grabbing' : ''}`}
+                className={`flex-1 overflow-hidden bg-white flex items-center justify-center ${!isDrawing ? 'cursor-grab active:cursor-grabbing' : ''}`}
                 onWheel={handleWheel}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
