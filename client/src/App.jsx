@@ -7,6 +7,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<PublicView />} />
+        <Route path="/plots" element={<PublicView />} />
         <Route path="/admin" element={<AdminDigitize />} />
       </Routes>
     </BrowserRouter>

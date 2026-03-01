@@ -10,12 +10,7 @@ export default function AdminDigitize() {
     const [editingPlotId, setEditingPlotId] = useState(null);
     const [imageDimensions, setImageDimensions] = useState({ width: 1344, height: 768 });
 
-    // Zoom and Pan state
-    const [zoom, setZoom] = useState(1);
-    const [pan, setPan] = useState({ x: 0, y: 0 });
-    const [isPanning, setIsPanning] = useState(false);
-    const [panStart, setPanStart] = useState({ x: 0, y: 0 });
-    const [isSpacePressed, setIsSpacePressed] = useState(false);
+
 
     const [formData, setFormData] = useState({
         number: '',
@@ -66,31 +61,7 @@ export default function AdminDigitize() {
         loadData();
     }, []);
 
-    // Keyboard event listeners for spacebar (pan mode)
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (e.code === 'Space' && !e.repeat) {
-                e.preventDefault();
-                setIsSpacePressed(true);
-            }
-        };
 
-        const handleKeyUp = (e) => {
-            if (e.code === 'Space') {
-                e.preventDefault();
-                setIsSpacePressed(false);
-                setIsPanning(false);
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        window.addEventListener('keyup', handleKeyUp);
-
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-            window.removeEventListener('keyup', handleKeyUp);
-        };
-    }, []);
 
     // Convert screen coordinates to SVG coordinates (accounting for zoom/pan)
     const screenToSVG = (clientX, clientY) => {
@@ -106,7 +77,6 @@ export default function AdminDigitize() {
 
     // Handle canvas click for drawing
     const handleCanvasClick = (e) => {
-        if (isPanning || isSpacePressed) return;
         if (!isDrawing) return;
 
         const { x, y } = screenToSVG(e.clientX, e.clientY);
@@ -291,40 +261,7 @@ export default function AdminDigitize() {
         setEditingPlotId(null);
     };
 
-    // Zoom controls
-    const handleZoomIn = () => setZoom(prev => Math.min(5, prev + 0.25));
-    const handleZoomOut = () => setZoom(prev => Math.max(0.25, prev - 0.25));
-    const handleResetZoom = () => { setZoom(1); setPan({ x: 0, y: 0 }); };
 
-    // Wheel zoom
-    const handleWheel = (e) => {
-        e.preventDefault();
-        const delta = e.deltaY > 0 ? -0.1 : 0.1;
-        setZoom(prev => Math.max(0.25, Math.min(5, prev + delta)));
-    };
-
-    // Pan handlers
-    const handleMouseDown = (e) => {
-        // Enable panning with: Middle click, Spacebar + Left click, or Left click when not drawing
-        if (e.button === 1 || (e.button === 0 && isSpacePressed) || (e.button === 0 && !isDrawing && e.target.tagName !== 'circle')) {
-            e.preventDefault();
-            setIsPanning(true);
-            setPanStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
-        }
-    };
-
-    const handleMouseMove = (e) => {
-        if (isPanning) {
-            e.preventDefault();
-            setPan({ x: e.clientX - panStart.x, y: e.clientY - panStart.y });
-        }
-    };
-
-    const handleMouseUp = () => {
-        if (!isSpacePressed) {
-            setIsPanning(false);
-        }
-    };
 
     return (
         <div className="h-screen w-full flex bg-background text-foreground overflow-hidden font-sans">
@@ -332,18 +269,7 @@ export default function AdminDigitize() {
             <div className="w-80 bg-card border-r border-border p-4 flex flex-col gap-4 overflow-y-auto z-10 shrink-0 shadow-lg">
                 <h1 className="text-2xl font-bold text-white mb-2">Admin Digitizer</h1>
 
-                {/* Zoom Controls */}
-                <div className="bg-gray-700 rounded-lg p-3">
-                    <div className="flex items-center justify-between text-white text-sm mb-2">
-                        <span>Zoom: {Math.round(zoom * 100)}%</span>
-                        <span className="text-gray-400 text-xs">Space+Drag to pan</span>
-                    </div>
-                    <div className="flex gap-2">
-                        <button onClick={handleZoomOut} className="flex-1 bg-gray-600 hover:bg-gray-500 text-white py-1 rounded">−</button>
-                        <button onClick={handleResetZoom} className="flex-1 bg-gray-600 hover:bg-gray-500 text-white py-1 rounded text-xs">Reset</button>
-                        <button onClick={handleZoomIn} className="flex-1 bg-gray-600 hover:bg-gray-500 text-white py-1 rounded">+</button>
-                    </div>
-                </div>
+
 
                 {/* Drawing Controls */}
                 <div className="bg-gray-700 rounded-lg p-4">
@@ -516,108 +442,98 @@ export default function AdminDigitize() {
             {/* Right Panel - Canvas */}
             <div
                 ref={containerRef}
-                className={`flex-1 overflow-hidden bg-white flex items-center justify-center ${!isDrawing ? 'cursor-grab active:cursor-grabbing' : ''}`}
-                onWheel={handleWheel}
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseUp}
+                className="flex-1 overflow-hidden bg-white flex items-center justify-center"
             >
-                <div
-                    className="relative shadow-2xl origin-center"
-                    style={{
-                        transform: `scale(${zoom}) translate(${pan.x / zoom}px, ${pan.y / zoom}px)`,
-                        transition: isPanning ? 'none' : 'transform 0.1s ease-out'
-                    }}
-                >
-                    <img
-                        src="/layouts/3d_render.png"
-                        alt="Site Layout"
-                        className="max-w-none pointer-events-none"
-                        style={{ width: imageDimensions.width, height: 'auto' }}
-                        onLoad={(e) => setImageDimensions({ width: e.target.naturalWidth, height: e.target.naturalHeight })}
-                    />
-                    <svg
-                        ref={svgRef}
-                        viewBox={`0 0 ${imageDimensions.width} ${imageDimensions.height}`}
-                        className="absolute inset-0 w-full h-full"
-                        style={{ cursor: isPanning ? 'grabbing' : isSpacePressed ? 'grab' : isDrawing ? 'crosshair' : 'default' }}
-                        onClick={handleCanvasClick}
-                        onDoubleClick={handleDoubleClick}
-                    >
-                        {/* Saved Plots */}
-                        {plots.filter(p => p.id !== editingPlotId).map(plot => (
-                            <g key={plot.id}>
-                                <path
-                                    d={plot.svgPath}
-                                    fill="rgba(34, 197, 94, 0.5)"
-                                    stroke="#22c55e"
-                                    strokeWidth="2"
-                                    className="cursor-pointer hover:fill-green-400/60"
-                                    onClick={(e) => { e.stopPropagation(); handleEditPlot(plot); }}
-                                />
-                                <text
-                                    x={plot.centroidX}
-                                    y={plot.centroidY}
-                                    textAnchor="middle"
-                                    dominantBaseline="middle"
-                                    fill="white"
-                                    fontSize="14"
-                                    fontWeight="bold"
-                                    style={{ textShadow: '0 1px 3px rgba(0,0,0,0.8)', pointerEvents: 'none' }}
-                                >
-                                    {plot.number}
-                                </text>
-                            </g>
-                        ))}
+                <div className="relative w-full h-full flex items-center justify-center p-4">
+                    <div className="relative inline-block shadow-2xl rounded-lg overflow-hidden" style={{ maxWidth: '90%', maxHeight: '90%' }}>
+                        <img
+                            src="/layouts/3d_render.png"
+                            alt="Site Layout"
+                            className="block w-full h-auto pointer-events-none select-none object-contain"
+                            onLoad={(e) => setImageDimensions({ width: e.target.naturalWidth, height: e.target.naturalHeight })}
+                        />
+                        <svg
+                            ref={svgRef}
+                            viewBox={`0 0 ${imageDimensions.width} ${imageDimensions.height}`}
+                            className="absolute inset-0 w-full h-full"
+                            style={{ cursor: isDrawing ? 'crosshair' : 'default' }}
+                            onClick={handleCanvasClick}
+                            onDoubleClick={handleDoubleClick}
+                        >
+                            {/* Saved Plots */}
+                            {plots.filter(p => p.id !== editingPlotId).map(plot => (
+                                <g key={plot.id}>
+                                    <path
+                                        d={plot.svgPath}
+                                        fill="rgba(34, 197, 94, 0.5)"
+                                        stroke="#22c55e"
+                                        strokeWidth="2"
+                                        className="cursor-pointer hover:fill-green-400/60"
+                                        onClick={(e) => { e.stopPropagation(); handleEditPlot(plot); }}
+                                    />
+                                    <text
+                                        x={plot.centroidX}
+                                        y={plot.centroidY}
+                                        textAnchor="middle"
+                                        dominantBaseline="middle"
+                                        fill="white"
+                                        fontSize="14"
+                                        fontWeight="bold"
+                                        style={{ textShadow: '0 1px 3px rgba(0,0,0,0.8)', pointerEvents: 'none' }}
+                                    >
+                                        {plot.number}
+                                    </text>
+                                </g>
+                            ))}
 
-                        {/* Current Drawing */}
-                        {currentPolygon.length > 0 && (
-                            <g>
-                                {/* Filled preview when 3+ points */}
-                                {currentPolygon.length >= 3 && (
-                                    <polygon
+                            {/* Current Drawing */}
+                            {currentPolygon.length > 0 && (
+                                <g>
+                                    {/* Filled preview when 3+ points */}
+                                    {currentPolygon.length >= 3 && (
+                                        <polygon
+                                            points={currentPolygon.map(p => `${p.x},${p.y}`).join(' ')}
+                                            fill="rgba(59, 130, 246, 0.3)"
+                                            stroke="#3b82f6"
+                                            strokeWidth="2"
+                                        />
+                                    )}
+                                    {/* Lines */}
+                                    <polyline
                                         points={currentPolygon.map(p => `${p.x},${p.y}`).join(' ')}
-                                        fill="rgba(59, 130, 246, 0.3)"
+                                        fill="none"
                                         stroke="#3b82f6"
                                         strokeWidth="2"
+                                        strokeDasharray={currentPolygon.length < 3 ? "5,5" : "none"}
                                     />
-                                )}
-                                {/* Lines */}
-                                <polyline
-                                    points={currentPolygon.map(p => `${p.x},${p.y}`).join(' ')}
-                                    fill="none"
-                                    stroke="#3b82f6"
-                                    strokeWidth="2"
-                                    strokeDasharray={currentPolygon.length < 3 ? "5,5" : "none"}
-                                />
-                                {/* Vertices */}
-                                {currentPolygon.map((point, i) => (
-                                    <g key={i}>
-                                        <circle
-                                            cx={point.x}
-                                            cy={point.y}
-                                            r="8"
-                                            fill={i === 0 ? '#22c55e' : '#3b82f6'}
-                                            stroke="white"
-                                            strokeWidth="2"
-                                            className="cursor-move"
-                                        />
-                                        <text
-                                            x={point.x}
-                                            y={point.y - 15}
-                                            textAnchor="middle"
-                                            fill="white"
-                                            fontSize="10"
-                                            style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}
-                                        >
-                                            {i + 1}
-                                        </text>
-                                    </g>
-                                ))}
-                            </g>
-                        )}
-                    </svg>
+                                    {/* Vertices */}
+                                    {currentPolygon.map((point, i) => (
+                                        <g key={i}>
+                                            <circle
+                                                cx={point.x}
+                                                cy={point.y}
+                                                r="8"
+                                                fill={i === 0 ? '#22c55e' : '#3b82f6'}
+                                                stroke="white"
+                                                strokeWidth="2"
+                                                className="cursor-move"
+                                            />
+                                            <text
+                                                x={point.x}
+                                                y={point.y - 15}
+                                                textAnchor="middle"
+                                                fill="white"
+                                                fontSize="10"
+                                                style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}
+                                            >
+                                                {i + 1}
+                                            </text>
+                                        </g>
+                                    ))}
+                                </g>
+                            )}
+                        </svg>
+                    </div>
                 </div>
             </div>
         </div>
