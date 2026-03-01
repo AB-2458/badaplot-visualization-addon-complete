@@ -11,11 +11,11 @@ export default function LayoutControls({
         <div className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-30">
 
             {/* Zoom Group */}
-            <div className="bg-white/90 backdrop-blur-sm shadow-xl rounded-xl p-1.5 flex flex-col gap-1 border border-white/50">
+            <div className="bg-white rounded-xl shadow-md border border-gray-100 p-1.5 flex flex-col gap-1">
                 <button
                     onClick={onZoomIn}
                     disabled={zoom >= 3}
-                    className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-700 disabled:opacity-40 transition-colors"
+                    className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-800 disabled:opacity-40 transition-colors"
                     title="Zoom In"
                 >
                     <Plus className="w-5 h-5" />
@@ -24,7 +24,7 @@ export default function LayoutControls({
                 <button
                     onClick={onZoomOut}
                     disabled={zoom <= 0.5}
-                    className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-700 disabled:opacity-40 transition-colors"
+                    className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-800 disabled:opacity-40 transition-colors"
                     title="Zoom Out"
                 >
                     <Minus className="w-5 h-5" />
@@ -32,10 +32,10 @@ export default function LayoutControls({
             </div>
 
             {/* Reset & Fullscreen */}
-            <div className="bg-white/90 backdrop-blur-sm shadow-xl rounded-xl p-1.5 flex flex-col gap-1 border border-white/50">
+            <div className="bg-white rounded-xl shadow-md border border-gray-100 p-1.5 flex flex-col gap-1">
                 <button
                     onClick={onReset}
-                    className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-700 transition-colors"
+                    className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-800 transition-colors"
                     title="Reset View"
                 >
                     <RotateCcw className="w-4 h-4" />
@@ -45,15 +45,15 @@ export default function LayoutControls({
 
                 <button
                     onClick={onFullscreen}
-                    className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-700 transition-colors"
+                    className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-800 transition-colors"
                     title="Fullscreen"
                 >
                     <Maximize2 className="w-4 h-4" />
                 </button>
             </div>
 
-            {/* Compass - Floating separate */}
-            <div className="bg-white/90 backdrop-blur-sm shadow-xl rounded-full w-12 h-12 flex items-center justify-center border-2 border-white mt-2">
+            {/* Compass */}
+            <div className="bg-white rounded-full w-12 h-12 flex items-center justify-center mt-2 shadow-md border border-gray-100">
                 <Navigation
                     className="w-5 h-5 text-red-500 drop-shadow-sm"
                     style={{ transform: 'rotate(-45deg)' }}

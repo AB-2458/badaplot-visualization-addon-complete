@@ -382,33 +382,33 @@ flowchart LR
 
 ### Phase 1: Foundation (Week 1-2)
 
-- [ ] Set up Next.js project with TypeScript
-- [ ] Configure Supabase (Database, Auth)
-- [ ] Create database schema
-- [ ] Build basic layout components
-- [ ] Create project listing page
+- [x] Set up React+Vite project with TypeScript
+- [x] Configure Supabase (Database, Auth structure)
+- [x] Create database schema
+- [x] Build basic layout components
+- [x] Create project listing page
 
 ### Phase 2: Core Features (Week 3-4)
 
-- [ ] Implement Interactive SVG Map component
-- [ ] Build plot status management
-- [ ] Create enquiry form with validation
-- [ ] Implement site visit scheduling
-- [ ] Add real-time status updates
+- [x] Implement Interactive SVG Map component
+- [x] Build plot status management
+- [x] Create enquiry form with validation
+- [x] Implement site visit scheduling
+- [x] Add real-time status updates
 
 ### Phase 3: Admin Dashboard (Week 5-6)
 
 - [ ] Build admin authentication
-- [ ] Create project management CRUD
-- [ ] Plot status update interface
-- [ ] Enquiry management system
-- [ ] Basic analytics dashboard
+- [x] Create plot digitization CRUD
+- [x] Plot status update interface
+- [x] Enquiry management system (via Dashboard)
+- [x] Basic analytics dashboard (via Dashboard)
 
 ### Phase 4: Polish & Deploy (Week 7-8)
 
-- [ ] Add animations and transitions
+- [x] Add animations and transitions
 - [ ] Implement email notifications
-- [ ] Mobile responsiveness
+- [x] Mobile responsiveness
 - [ ] Performance optimization
 - [ ] Deploy to production
 

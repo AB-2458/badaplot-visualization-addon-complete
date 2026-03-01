@@ -30,32 +30,25 @@ export default function DetailsPanel({ project }) {
     ];
 
     return (
-        <div className="h-full bg-gray-50 overflow-y-auto">
-            {/* Hero Section */}
-            <div className="bg-gradient-to-br from-purple-600 to-indigo-700 text-white p-6">
-                <h2 className="text-2xl font-bold mb-2">{project?.name || 'Archer Homes 3d'}</h2>
-                <p className="text-white/80 flex items-center gap-2 text-sm">
-                    <MapPin className="w-4 h-4" />
-                    {project?.location || 'Kurnool, Andhra Pradesh'}
-                </p>
-                <div className="flex gap-4 mt-4 text-sm">
-                    <div className="bg-white/20 px-3 py-2 rounded-lg">
-                        <span className="block text-white/70 text-xs">Total Area</span>
-                        <span className="font-semibold">5.2 Acres</span>
-                    </div>
-                    <div className="bg-white/20 px-3 py-2 rounded-lg">
-                        <span className="block text-white/70 text-xs">Total Plots</span>
-                        <span className="font-semibold">62 Units</span>
-                    </div>
-                    <div className="bg-white/20 px-3 py-2 rounded-lg">
-                        <span className="block text-white/70 text-xs">Starting From</span>
-                        <span className="font-semibold">₹ 12 Lakhs</span>
-                    </div>
+        <div className="h-full bg-white overflow-y-auto pb-24 pt-28">
+            {/* Quick Stats Section */}
+            <div className="flex justify-between items-center p-6 bg-white border-b border-gray-200">
+                <div className="bg-gray-50 px-4 py-2 rounded-lg">
+                    <span className="block text-gray-500 text-xs">Total Area</span>
+                    <span className="font-semibold text-gray-900">5.2 Acres</span>
+                </div>
+                <div className="bg-gray-50 px-4 py-2 rounded-lg">
+                    <span className="block text-gray-500 text-xs">Total Plots</span>
+                    <span className="font-semibold text-gray-900">62 Units</span>
+                </div>
+                <div className="bg-gray-50 px-4 py-2 rounded-lg">
+                    <span className="block text-gray-500 text-xs">Starting From</span>
+                    <span className="font-semibold text-gray-900">₹ 12 Lakhs</span>
                 </div>
             </div>
 
             {/* Gallery Section */}
-            <div className="p-6 bg-white border-b">
+            <div className="p-6 bg-white border-b border-gray-200">
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                     <Image className="w-5 h-5 text-primary" /> Gallery
                 </h3>
@@ -63,7 +56,7 @@ export default function DetailsPanel({ project }) {
                     {images.map((img, i) => (
                         <div
                             key={i}
-                            className="aspect-video bg-gray-100 rounded-xl overflow-hidden hover:ring-2 hover:ring-primary transition-all cursor-pointer"
+                            className="aspect-video bg-gray-50 rounded-xl overflow-hidden hover:ring-2 hover:ring-primary transition-all cursor-pointer border border-gray-100 shadow-sm"
                         >
                             <img
                                 src={img}
@@ -76,15 +69,15 @@ export default function DetailsPanel({ project }) {
             </div>
 
             {/* Amenities Section */}
-            <div className="p-6 bg-white border-b">
+            <div className="p-6 bg-white border-b border-gray-200">
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Check className="w-5 h-5 text-green-600" /> Amenities
+                    <Check className="w-5 h-5 text-emerald" /> Amenities
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
                     {amenities.map((amenity, i) => (
                         <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
-                            <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                <Check className="w-3 h-3 text-green-600" />
+                            <div className="w-5 h-5 bg-emerald/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                <Check className="w-3 h-3 text-emerald" />
                             </div>
                             {amenity}
                         </div>
@@ -93,13 +86,13 @@ export default function DetailsPanel({ project }) {
             </div>
 
             {/* Pricing Section */}
-            <div className="p-6 bg-white border-b">
+            <div className="p-6 bg-white border-b border-gray-200">
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                     <FileText className="w-5 h-5 text-primary" /> Pricing
                 </h3>
                 <div className="space-y-3">
                     {pricings.map((p, idx) => (
-                        <div key={idx} className="bg-gray-50 rounded-xl p-4 flex justify-between items-center">
+                        <div key={idx} className="bg-gray-50 rounded-xl p-4 flex justify-between items-center border border-gray-200 shadow-sm">
                             <div>
                                 <p className="font-semibold text-gray-900">{p.type}</p>
                                 <p className="text-xs text-gray-500">{p.description}</p>
@@ -111,7 +104,7 @@ export default function DetailsPanel({ project }) {
             </div>
 
             {/* Contact Section */}
-            <div className="p-6 bg-white border-b">
+            <div className="p-6 bg-white border-b border-gray-200">
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Contact Us</h3>
                 <div className="space-y-3">
                     <a href={`tel:${project?.phone}`} className="flex items-center gap-3 text-gray-700 hover:text-primary">
@@ -124,7 +117,7 @@ export default function DetailsPanel({ project }) {
                         <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
                             <Mail className="w-5 h-5 text-primary" />
                         </div>
-                        <span>{project?.email || 'sales@archerhomes.com'}</span>
+                        <span>{project?.email || 'sales@padmalaxmirealty.com'}</span>
                     </a>
                 </div>
             </div>
@@ -135,13 +128,13 @@ export default function DetailsPanel({ project }) {
                     <Download className="w-5 h-5 text-primary" /> Downloads
                 </h3>
                 <div className="space-y-2">
-                    <button className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl hover:from-purple-100 hover:to-indigo-100 transition-colors group">
-                        <span className="text-sm font-medium text-gray-700 group-hover:text-primary">Project Brochure</span>
-                        <Download className="w-4 h-4 text-primary" />
+                    <button className="w-full flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 hover:border-gray-300 transition-colors group shadow-sm">
+                        <span className="text-sm font-medium text-gray-900 group-hover:text-primary">Project Brochure</span>
+                        <Download className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" />
                     </button>
-                    <button className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl hover:from-purple-100 hover:to-indigo-100 transition-colors group">
-                        <span className="text-sm font-medium text-gray-700 group-hover:text-primary">Layout PDF</span>
-                        <Download className="w-4 h-4 text-primary" />
+                    <button className="w-full flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 hover:border-gray-300 transition-colors group shadow-sm">
+                        <span className="text-sm font-medium text-gray-900 group-hover:text-primary">Layout PDF</span>
+                        <Download className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" />
                     </button>
                 </div>
             </div>

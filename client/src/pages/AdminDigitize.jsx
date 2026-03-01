@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { supabase } from '../lib/supabaseClient';
 
 export default function AdminDigitize() {
     const [plots, setPlots] = useState([]);
@@ -27,26 +29,42 @@ export default function AdminDigitize() {
     const svgRef = useRef(null);
     const containerRef = useRef(null);
 
-    // Load plots from localStorage on mount
-    useEffect(() => {
-        const saved = localStorage.getItem('badaplot_plots');
-        if (saved) {
-            try {
-                const data = JSON.parse(saved);
-                setPlots(data.plots || []);
-            } catch (e) {
-                console.error('Error loading plots:', e);
-            }
-        }
-    }, []);
+    const [projectId, setProjectId] = useState(null);
 
-    // Save plots to localStorage whenever they change
+    // Load project and plots from Supabase on mount
     useEffect(() => {
-        if (plots.length > 0) {
-            localStorage.setItem('badaplot_plots', JSON.stringify({ plots }));
-            console.log('[Badaplot] Saved', plots.length, 'plots to localStorage');
-        }
-    }, [plots]);
+        const loadData = async () => {
+            const { data: project } = await supabase
+                .from('projects')
+                .select('id')
+                .limit(1)
+                .single();
+
+            if (project) {
+                setProjectId(project.id);
+                const { data: plotData } = await supabase
+                    .from('plots')
+                    .select('*')
+                    .eq('project_id', project.id);
+
+                if (plotData) {
+                    const mappedPlots = plotData.map(p => ({
+                        ...p,
+                        svgPath: p.svg_path,
+                        centroidX: p.centroid_x,
+                        centroidY: p.centroid_y,
+                        area: p.area_sqft,
+                        pricePerSqft: p.price_per_sqft,
+                        totalPrice: p.total_price,
+                        measurements: p.features?.measurements,
+                        points: p.features?.points
+                    }));
+                    setPlots(mappedPlots);
+                }
+            }
+        };
+        loadData();
+    }, []);
 
     // Keyboard event listeners for spacebar (pan mode)
     useEffect(() => {
@@ -139,7 +157,7 @@ export default function AdminDigitize() {
 
         const centroid = calculateCentroid(currentPolygon);
         const newPlot = {
-            id: editingPlotId || `plot-${Date.now()}`,
+            id: editingPlotId || crypto.randomUUID(),
             number: formData.number,
             area: parseFloat(formData.area) || 0,
             facing: formData.facing,
@@ -154,13 +172,40 @@ export default function AdminDigitize() {
             points: currentPolygon
         };
 
+        const dbPlot = {
+            project_id: projectId,
+            number: newPlot.number,
+            svg_path: newPlot.svgPath,
+            centroid_x: newPlot.centroidX,
+            centroid_y: newPlot.centroidY,
+            status: newPlot.status,
+            type: newPlot.type,
+            area_sqft: newPlot.area,
+            price_per_sqft: newPlot.pricePerSqft,
+            total_price: newPlot.totalPrice,
+            facing: newPlot.facing,
+            features: {
+                measurements: newPlot.measurements,
+                points: newPlot.points
+            }
+        };
+
         if (editingPlotId) {
             // Update existing plot
             setPlots(prev => prev.map(p => p.id === editingPlotId ? newPlot : p));
             setEditingPlotId(null);
+
+            supabase.from('plots').update(dbPlot).eq('id', editingPlotId).then(({ error }) => {
+                if (error) console.error("Error updating plot:", error);
+            });
         } else {
             // Add new plot
             setPlots(prev => [...prev, newPlot]);
+            dbPlot.id = newPlot.id;
+
+            supabase.from('plots').insert([dbPlot]).then(({ error }) => {
+                if (error) console.error("Error inserting plot:", error);
+            });
         }
 
         setCurrentPolygon([]);
@@ -193,10 +238,9 @@ export default function AdminDigitize() {
 
     // Delete plot
     const handleDeletePlot = (plotId) => {
-        setPlots(prev => {
-            const updated = prev.filter(p => p.id !== plotId);
-            localStorage.setItem('badaplot_plots', JSON.stringify({ plots: updated }));
-            return updated;
+        setPlots(prev => prev.filter(p => p.id !== plotId));
+        supabase.from('plots').delete().eq('id', plotId).then(({ error }) => {
+            if (error) console.error("Error deleting plot", error);
         });
     };
 
@@ -261,8 +305,8 @@ export default function AdminDigitize() {
 
     // Pan handlers
     const handleMouseDown = (e) => {
-        // Enable panning with: Middle click, or Spacebar + Left click
-        if (e.button === 1 || (e.button === 0 && isSpacePressed)) {
+        // Enable panning with: Middle click, Spacebar + Left click, or Left click when not drawing
+        if (e.button === 1 || (e.button === 0 && isSpacePressed) || (e.button === 0 && !isDrawing && e.target.tagName !== 'circle')) {
             e.preventDefault();
             setIsPanning(true);
             setPanStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
@@ -283,10 +327,10 @@ export default function AdminDigitize() {
     };
 
     return (
-        <div className="h-screen flex bg-gray-900">
-            {/* Left Panel - Tools */}
-            <div className="w-80 bg-gray-800 p-4 flex flex-col gap-4 overflow-y-auto">
-                <h1 className="text-2xl font-bold text-white">Admin Digitizer</h1>
+        <div className="h-screen w-full flex bg-background text-foreground overflow-hidden font-sans">
+            {/* Left Sidebar */}
+            <div className="w-80 bg-card border-r border-border p-4 flex flex-col gap-4 overflow-y-auto z-10 shrink-0 shadow-lg">
+                <h1 className="text-2xl font-bold text-white mb-2">Admin Digitizer</h1>
 
                 {/* Zoom Controls */}
                 <div className="bg-gray-700 rounded-lg p-3">
@@ -307,7 +351,7 @@ export default function AdminDigitize() {
                     {!isDrawing ? (
                         <button
                             onClick={startDrawing}
-                            className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg font-medium"
+                            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-2 px-4 rounded-lg font-medium"
                         >
                             + Draw New Plot
                         </button>
@@ -464,15 +508,15 @@ export default function AdminDigitize() {
                     Plots auto-save to browser. Visit public view to see them.
                 </div>
 
-                <a href="/" className="text-gray-400 hover:text-white text-center py-2 bg-gray-700 rounded-lg">
+                <Link to="/" className="text-gray-400 hover:text-white text-center py-2 bg-gray-700 rounded-lg transition-colors">
                     ← Back to Public View
-                </a>
+                </Link>
             </div>
 
             {/* Right Panel - Canvas */}
             <div
                 ref={containerRef}
-                className="flex-1 overflow-hidden bg-gray-950 flex items-center justify-center"
+                className={`flex-1 overflow-hidden bg-gray-950 flex items-center justify-center ${!isDrawing ? 'cursor-grab active:cursor-grabbing' : ''}`}
                 onWheel={handleWheel}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}

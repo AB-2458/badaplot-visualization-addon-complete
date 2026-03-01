@@ -19,13 +19,13 @@ export default function PlotTooltip({ plot, position }) {
             }}
         >
             {/* Tooltip Arrow */}
-            <div className={`absolute -top-2 ${isLeft ? 'right-4' : 'left-4'} w-4 h-4 bg-white rotate-45 transform border-t border-l border-gray-100`}></div>
+            <div className={`absolute -top-2 ${isLeft ? 'right-4' : 'left-4'} w-4 h-4 bg-card rotate-45 transform border-t border-l border-border`}></div>
 
             {/* Main Container */}
-            <div className="bg-white rounded-lg overflow-hidden min-w-[280px] border border-gray-100 shadow-xl">
+            <div className="bg-card rounded-lg overflow-hidden min-w-[280px] border border-border shadow-xl">
 
                 {/* Header Bar */}
-                <div className="bg-gradient-to-r from-gray-50 to-white px-4 py-3 border-b border-gray-100">
+                <div className="bg-gradient-to-r from-muted to-card px-4 py-3 border-b border-border">
                     <div className="flex items-center justify-between">
                         <span className="text-primary font-bold text-lg">Unit {plot.number}</span>
                         <span
@@ -35,31 +35,31 @@ export default function PlotTooltip({ plot, position }) {
                             {plot.status}
                         </span>
                     </div>
-                    <div className="text-xs text-gray-500 font-medium mt-1">
+                    <div className="text-xs text-muted-foreground font-medium mt-1">
                         {plot.type} • {plot.facing} Facing
                     </div>
                 </div>
 
                 {/* Content Body */}
-                <div className="bg-gray-50/50">
+                <div className="bg-muted/50">
                     {/* Row 1: Area */}
-                    <div className="flex items-center justify-between px-4 py-2 border-b border-gray-100">
-                        <span className="text-sm text-gray-500">Area</span>
-                        <span className="text-sm font-semibold text-gray-800">
+                    <div className="flex items-center justify-between px-4 py-2 border-b border-border">
+                        <span className="text-sm text-muted-foreground">Area</span>
+                        <span className="text-sm font-semibold text-foreground">
                             {area.toLocaleString()} Sq.ft ({cents} Cents)
                         </span>
                     </div>
 
                     {/* Row 2: Cost per sq ft */}
-                    <div className="flex items-center justify-between px-4 py-2 border-b border-gray-100">
-                        <span className="text-sm text-gray-500">Cost/Sq.ft</span>
-                        <span className="text-sm font-semibold text-gray-800">{formatCurrency(pricePerSqft)}</span>
+                    <div className="flex items-center justify-between px-4 py-2 border-b border-border">
+                        <span className="text-sm text-muted-foreground">Cost/Sq.ft</span>
+                        <span className="text-sm font-semibold text-foreground">{formatCurrency(pricePerSqft)}</span>
                     </div>
 
                     {/* Row 3: Total Price */}
-                    <div className="flex items-center justify-between px-4 py-3 bg-white">
-                        <span className="text-sm text-gray-500">Total Price</span>
-                        <span className="text-base font-bold text-green-600">{formatCurrency(totalPrice)}</span>
+                    <div className="flex items-center justify-between px-4 py-3 bg-card">
+                        <span className="text-sm text-muted-foreground">Total Price</span>
+                        <span className="text-base font-bold text-emerald">{formatCurrency(totalPrice)}</span>
                     </div>
                 </div>
 

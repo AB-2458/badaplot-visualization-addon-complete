@@ -1,0 +1,478 @@
+================================================================================
+            BADAPLOT - INTERACTIVE PLOT AVAILABILITY SYSTEM
+                       PROJECT REPORT
+================================================================================
+Date: 28-Feb-2026
+Prepared for: Valuation / Pricing Reference
+================================================================================
+
+
+1. WHAT THE PROJECT IS
+================================================================================
+
+This project is an "Interactive Plot Availability System" -- a full-stack
+web application built as a PREMIUM FEATURE exclusively for the TOP-TIER
+users of the real estate portal badaplot.com.
+
+It is NOT a standalone product. It is an integrated addon that will be
+unlocked for badaplot.com's highest-tier subscribers (e.g. Diamond plan
+agents, premium developers). As badaplot.com grows its user base, more
+and more agents and developers will gain access to this digitizing portal
+to visualize their plot layouts and share live, real-time plot links with
+prospective buyers.
+
+The system has two core pillars:
+
+  PILLAR 1 - THE DIGITIZING PORTAL:
+  Allows top-tier users to:
+    (a) Upload a PDF or high-resolution image of their land/plot layout
+        (e.g. a site plan from a surveyor or architect).
+    (b) Digitize that layout by drawing interactive polygons (SVG paths)
+        over each individual plot on the image.
+    (c) Assign rich metadata to each plot: plot number, area (sq.ft),
+        price per sq.ft, total price, facing direction, type, and live
+        status (Available / Sold / Reserved / Hold / Registered, etc.).
+    (d) Publish the digitized layout as a live, interactive, color-coded
+        plot map that end-users (buyers) can click, filter, and browse
+        directly on badaplot.com.
+    (e) Share a direct link to their project's real-time plot map with
+        anyone -- the link always shows the latest live status of every
+        plot (no stale data).
+
+  PILLAR 2 - THE BOTH-SIDE LEDGER / DEALFLOW DASHBOARD:
+  A dedicated multi-project portal built for the 5 KEY STAKEHOLDER
+  ROLES that participate across different real estate projects
+  simultaneously. These 5 characters (e.g. Developer, Agent, Buyer,
+  Finder/Broker, Admin) each have their own view within a unified
+  dashboard that tracks:
+    - Deal pipelines across multiple projects at once
+    - Commission tracking per stakeholder per project
+    - Both-side financial ledger (money in vs. money out)
+    - Payment schedules and receipts
+    - Lead management and status tracking
+    - Finder fees and document management
+  This ensures that every character involved in any project can log in
+  and see their complete financial and operational picture across ALL
+  the projects they are part of, in one place.
+
+
+2. WHAT HAS BEEN BUILT (Deliverables)
+================================================================================
+
+The project consists of THREE distinct modules:
+
+  MODULE A: Plot Visualization Frontend  (client/)
+  MODULE B: Backend API Server           (server/)
+  MODULE C: Dealflow Dashboard           (dealflow-dashboard/)
+
+Detailed breakdown of each:
+
+------------------------------------------------------------------------------
+MODULE A: Plot Visualization Frontend (client/)
+------------------------------------------------------------------------------
+  Language/Framework : JavaScript (JSX), React 18, Vite
+  Styling           : Tailwind CSS
+  Icons             : Lucide React
+  Database Client   : Supabase JS SDK (integrated)
+  Source Files       : 23 files
+  Source Code Size   : ~121 KB
+
+  PAGES BUILT (2):
+    1. PublicView.jsx (5,715 bytes)
+       - The customer-facing interactive plot map page.
+       - Shows all plots color-coded by status on the site plan.
+       - Supports click-to-view-details, filtering, and site-visit scheduling.
+
+    2. AdminDigitize.jsx (26,830 bytes)
+       - The admin tool for digitizing plot layouts.
+       - Upload an image, click-to-draw polygon vertices, close the polygon.
+       - Configure each plot's metadata and save.
+
+  COMPONENTS BUILT (12, organized in 4 groups):
+    Layout (4 files):
+      - Header.jsx          : Top navigation bar
+      - StatusBar.jsx        : Real-time availability summary bar
+      - BottomNav.jsx        : Mobile bottom navigation
+      - LayoutControls.jsx   : Zoom/pan control buttons
+
+    Map (2 files):
+      - PlotLayout.jsx       : Core SVG-over-image rendering engine with
+                                zoom (0.4x-4x), pan, and click detection.
+      - PlotTooltip.jsx      : Hover tooltip for plot quick-info.
+
+    Modals (3 files):
+      - PlotModal.jsx        : Full plot details popup with status update.
+      - FilterModal.jsx      : Filter plots by status, type, facing.
+      - ScheduleVisitModal.jsx : Site visit booking form.
+
+    Views (3 files):
+      - InventoryReport.jsx  : Tabular grid of all plots.
+      - DetailsPanel.jsx     : Side-panel with detailed plot info.
+      - LocationMap.jsx      : Integrated Google Maps location view.
+
+  KEY TECHNICAL CAPABILITIES:
+    - Hybrid rendering: raster image background + vector SVG overlay.
+    - Sub-pixel accurate coordinate capture.
+    - Coordinates stored in image-space (pixel values).
+    - Immutable coordinate data; zoom/pan applied as CSS transforms.
+    - Configurable SVG viewbox per project (e.g. "0 0 1600 900").
+    - 7 supported plot statuses with distinct color coding.
+    - Arbitrary polygon shapes via SVG path data.
+    - Data-driven: entire visualization controlled by a single JSON config.
+
+------------------------------------------------------------------------------
+MODULE B: Backend API Server (server/)
+------------------------------------------------------------------------------
+  Language/Framework : Node.js, Express.js 5
+  Source Files       : 6 files (excluding node_modules)
+  Source Code Size   : ~119 KB
+  Data Storage       : In-memory JSON (samplePlots.json), Supabase-ready.
+
+  DEPENDENCIES (purpose-built for this project):
+    - express          : HTTP server framework
+    - cors             : Cross-origin support for frontend
+    - multer           : File upload handling (PDF/image upload)
+    - sharp            : High-performance image processing
+    - pdf-to-png-converter : PDF to high-resolution PNG conversion
+    - pdf2pic          : Alternative PDF rasterization engine
+    - pdfjs-dist       : Mozilla PDF parsing library
+    - canvas           : Server-side canvas for image operations
+    - dotenv           : Environment configuration
+
+  API ENDPOINTS:
+    - GET  /api/project         : Fetch full project data + all plots
+    - POST /api/plots/:id/status : Update a single plot's status
+    - POST /api/upload          : PDF/image upload endpoint
+
+  KEY TECHNICAL CAPABILITIES:
+    - PDF-to-image processing pipeline (3 independent libraries).
+    - Image manipulation with Sharp for DPI control.
+    - RESTful API design with CORS enabled.
+    - In-memory data store for MVP, structured for database migration.
+
+------------------------------------------------------------------------------
+MODULE C: Dealflow Dashboard (dealflow-dashboard/)
+------------------------------------------------------------------------------
+  Language/Framework : TypeScript (TSX), React 18, Vite
+  Styling           : Tailwind CSS + Shadcn UI component library
+  State Management  : React Context API + TanStack React Query
+  Database          : Supabase (PostgreSQL + Auth)
+  Forms             : React Hook Form + Zod validation
+  Charts            : Recharts
+  Animations        : Framer Motion
+  UI Components     : 49 Radix UI primitives (full Shadcn UI set)
+  Source Files       : 130 files
+  Source Code Size   : ~585 KB
+
+  PAGES BUILT (24):
+    1.  Login.tsx              (7,759 bytes) - Authentication page
+    2.  Dashboard.tsx          (3,896 bytes) - Main overview/home
+    3.  DealPipeline.tsx      (11,242 bytes) - Kanban-style deal tracker
+    4.  DealDetail.tsx         (2,800 bytes) - Individual deal view
+    5.  CommissionTracker.tsx  (10,476 bytes) - Agent commission tracking
+    6.  FinancialReports.tsx  (16,097 bytes) - Both-side ledger / reports
+    7.  Payments.tsx          (10,895 bytes) - Payment management
+    8.  PaymentReceived.tsx    (6,735 bytes) - Received payments log
+    9.  PaymentSchedule.tsx    (5,354 bytes) - Upcoming payment schedule
+    10. MyPlots.tsx            (5,061 bytes) - Agent's assigned plots
+    11. PlotsSold.tsx          (5,711 bytes) - Sold plots report
+    12. MyPurchases.tsx        (4,562 bytes) - Purchase history
+    13. MyLeads.tsx            (4,123 bytes) - Lead management
+    14. LeadStatus.tsx         (3,991 bytes) - Lead status tracking
+    15. FinderFees.tsx         (5,554 bytes) - Finder fee calculator
+    16. Documents.tsx          (3,908 bytes) - Document management
+    17. AssignedProjects.tsx   (3,892 bytes) - Project assignments
+    18. Settings.tsx          (18,343 bytes) - User/system settings
+    19. Notifications.tsx      (6,446 bytes) - Notification center
+    20. Calculators.tsx          (964 bytes) - Land/financial calculators
+    21. PlotDigitizer.tsx     (28,484 bytes) - Advanced plot digitizer
+    22. PlotViewer.tsx         (6,207 bytes) - Public plot viewer
+    23. NotFound.tsx             (751 bytes) - 404 error page
+    24. Index.tsx                (483 bytes) - Root redirect
+
+  CUSTOM COMPONENTS (beyond the 49 Shadcn UI primitives):
+    - DashboardLayout.tsx     : Responsive sidebar + header layout
+    - ProtectedRoute.tsx      : Auth guard for protected routes
+    - GlobalSearch.tsx        : Full-app search functionality
+    - BottomNav.tsx           : Mobile-responsive bottom navigation
+    - ThemeToggle.tsx         : Dark/light mode switch
+    - CountUp.tsx             : Animated number counter
+    - EmptyState.tsx          : Empty state placeholder
+    - SkeletonCard.tsx        : Loading skeleton UI
+    - NavLink.tsx             : Active-state nav link
+
+    Deals module (7 components):
+      - NewDealModal, DealDetailDrawer, PipelineFilters
+      - 4 tabbed detail views
+
+    Plots module (12 components):
+      - Plot map, modals, layout, views (mirroring Module A)
+
+    Calculators module (3 components):
+      - Land area calculators, financial calculators
+
+    Notifications module (1 component)
+
+  CONTEXT PROVIDERS (4):
+    - AuthContext.tsx          : User authentication state
+    - DealContext.tsx          : Deal pipeline state management
+    - NotificationContext.tsx  : Real-time notification engine
+    - ThemeContext.tsx         : Dark/light theme persistence
+
+  BUSINESS LOGIC LIBRARIES (lib/):
+    - deals.ts               (22,151 bytes) - Deal CRUD and pipeline logic
+    - commissions.ts         (10,299 bytes) - Commission calculation engine
+    - land-calculations.ts    (4,555 bytes) - Area unit conversions
+    - currency.ts             (1,107 bytes) - INR currency formatting
+    - navigation.ts           (2,368 bytes) - Route/menu configuration
+    - plots/ (4 files)        - Plot data management layer
+
+  DEPLOYMENT:
+    - Deployed on Vercel (vercel.json configured).
+    - Build command: cd dealflow-dashboard && npm install && npm run build
+    - Output: dealflow-dashboard/dist/
+    - SPA routing with catch-all rewrites.
+
+
+  ADDITIONAL UTILITIES AND DATA FILES:
+    Client:
+      - supabaseClient.js    (538 bytes)  : Supabase SDK initialization
+      - coordinateTransform.js (10,567 bytes) : SVG coordinate math engine
+                               (handles conversions between image-space,
+                                viewport-space, and SVG coordinate systems
+                                for accurate polygon placement)
+      - statusColors.js      (1,398 bytes) : Centralized plot status-to-color
+                               mapping for consistent rendering
+      - .env.example         (100 bytes)  : Environment variable template
+                               for Supabase URL + anon key
+
+    Server:
+      - pdfProcessor.js      (3,288 bytes) : PDF-to-PNG processing utility
+                               (handles conversion, DPI control, and output)
+      - samplePlots.json    (12,527 bytes) : Complete sample dataset with
+                               30 pre-digitized plots including SVG paths,
+                               centroids, metadata, and project config
+      - testPdfProcessor.js    (616 bytes) : PDF processor test script
+
+    Dashboard:
+      - use-mobile.tsx         (595 bytes) : Custom hook for responsive
+                               breakpoint detection
+      - use-toast.ts         (4,121 bytes) : Custom toast notification hook
+      - test/setup.ts          (368 bytes) : Test framework configuration
+      - test/example.test.ts   (150 bytes) : Test template
+      - robots.txt             (174 bytes) : SEO crawl configuration
+      - favicon.ico         (20,373 bytes) : Custom project favicon
+      - placeholder.svg      (3,253 bytes) : Placeholder image asset
+
+  ROOT-LEVEL DELIVERABLES:
+    - RESEARCH.md           (13,958 bytes) : 455-line R&D document including:
+        * Full system architecture diagrams (Mermaid)
+        * Complete PostgreSQL database schema (5 tables)
+        * Recommended tech stack analysis
+        * Component architecture blueprint
+        * Customer and admin user flow diagrams
+        * 8-week phased development plan
+    - BADAPLOT_CAPABILITIES.md (14,041 bytes) : 491-line technical capability
+        assessment answering 20 questions about system readiness
+    - Technical Blueprint.md (12,963 bytes) : 117-line technical blueprint
+        covering build strategy in 3 phases (MVP, Real-time, 3D)
+    - vercel.json              (255 bytes) : Production deployment config
+    - check_dims.js            (479 bytes) : Image dimension checker utility
+    - check_image_v2.js        (374 bytes) : Image validation utility v2
+    - replace_script.js      (1,311 bytes) : Batch text replacement script
+    - Sample plot images (4 files): plot1.jpeg, plot2.jpeg,
+      plot_data_page1.png, Whisk image (~2.7 MB total)
+
+
+3. HOW IT WAS BUILT (Technology Decisions)
+================================================================================
+
+  RENDERING APPROACH:
+    The plot visualization uses a "hybrid raster-vector" technique.
+    A high-resolution image (PNG, from a PDF or scan) serves as the
+    static background layer. On top of it, an SVG layer is positioned
+    with matching dimensions (via a configurable viewbox like
+    "0 0 1600 900"). Each plot is an SVG <path> element with polygon
+    coordinates stored as simple SVG path strings (e.g.
+    "M50,50 L120,50 L120,100 L50,100 Z"). This means:
+      - The background image can be any resolution (300-600 DPI).
+      - Plot boundaries are infinitely scalable vectors.
+      - Zoom and pan are pure CSS transforms on the container,
+        never touching the coordinate data.
+      - Each plot stores its centroid (x,y) for label positioning.
+
+  DATA MODEL:
+    Each project is a single JSON object containing:
+      - project: { id, name, description, location }
+      - svgViewbox: "0 0 [width] [height]"
+      - plots: [ { id, number, status, type, areaSqft, pricePerSqft,
+                    totalPrice, facing, svgPath, centroidX, centroidY } ]
+
+  ARCHITECTURE:
+    - Frontend and backend are decoupled (CORS-enabled REST API).
+    - The dashboard connects to Supabase for persistent PostgreSQL
+      storage and user authentication.
+    - The visualization widget is fully data-driven: swap the JSON
+      config and background image, and a new project renders with
+      zero code changes.
+
+  DEPLOYMENT INFRASTRUCTURE:
+    - Frontend: Vercel (serverless edge deployment).
+    - Backend: Node.js server (can run on any cloud provider).
+    - Database: Supabase (managed PostgreSQL).
+
+
+4. HOW IT WORKS AS A PREMIUM ADDON FOR BADAPLOT.COM
+================================================================================
+
+  WHO GETS ACCESS:
+    This feature is EXCLUSIVELY for badaplot.com's top-tier subscribers.
+    It is NOT available to free-tier or basic-tier users. As badaplot.com
+    grows and acquires more premium subscribers, the volume of digitized
+    projects on the platform will scale proportionally -- each new
+    top-tier user will digitize their own layouts and publish shareable
+    real-time plot links.
+
+  INTEGRATION MODEL:
+    When a buyer on badaplot.com clicks on a project listing (for example,
+    "Shri Vitthal Park" in Pune), instead of seeing just photos and text,
+    they see a live, interactive plot map showing exactly which plots are
+    Available (green), Sold (red), Reserved (orange), etc. This is the
+    competitive differentiator -- no other Indian real estate portal
+    provides this level of real-time, interactive plot visualization.
+
+  HOW IT PLUGS IN:
+    1. Each project on badaplot.com has a unique project ID.
+    2. The widget fetches its JSON config from the API using that ID.
+    3. The widget renders the interactive plot map inside the project
+       listing page.
+    4. No code changes are required per project -- only new data and
+       a new background image.
+
+  SHAREABLE REAL-TIME LINKS:
+    Top-tier users can share a direct URL (e.g. plots.badaplot.com/xyz)
+    to anyone. This link always shows the LIVE status of every plot.
+    When a plot is marked Sold, the link updates instantly for everyone
+    viewing it. This eliminates stale brochures, outdated PDFs, and
+    manual WhatsApp updates that agents currently rely on.
+
+  EMBEDDABLE APPROACHES:
+    Option A: Direct React component import (badaplot.com is React).
+      <PlotLayout
+        plots={projectData.plots}
+        svgViewbox={projectData.svgViewbox}
+        onPlotClick={handlePlotClick}
+      />
+
+    Option B: iframe embed for any website.
+      <iframe src="https://plots.badaplot.com/?project=xyz" />
+
+    Option C: Web Component (future).
+      <badaplot-viewer project-id="xyz"></badaplot-viewer>
+
+  THE 5-STAKEHOLDER LEDGER:
+    Real estate deals in India involve multiple parties across multiple
+    projects. The Dealflow Dashboard provides a unified portal where
+    each of the 5 key stakeholder roles can log in and see their
+    complete picture across ALL projects they are part of:
+
+      Stakeholder 1: Developer / Landowner
+        - Sees all their projects, plot availability, total revenue.
+
+      Stakeholder 2: Agent / Broker
+        - Sees assigned projects, commissions earned, leads managed.
+
+      Stakeholder 3: Buyer / Investor
+        - Sees their purchases, payment schedules, documents.
+
+      Stakeholder 4: Finder / Referrer
+        - Sees finder fees, referral chains, payouts.
+
+      Stakeholder 5: Admin / Platform Operator (Badaplot)
+        - Sees everything: all projects, all stakeholders, all money
+          flow, both-side ledger.
+
+    This is critical because each of these 5 characters is typically
+    involved in MULTIPLE projects at the same time. Without a unified
+    ledger, they would need to track spreadsheets per project. This
+    dashboard eliminates that entirely.
+
+  ADMIN WORKFLOW:
+    1. Top-tier agent logs into the Dealflow Dashboard.
+    2. Uploads a PDF/image of the site layout.
+    3. Uses the Plot Digitizer to draw polygons over each plot.
+    4. Assigns metadata (number, area, price, status) to each plot.
+    5. Saves. The public plot map is now live on badaplot.com.
+    6. Shares the real-time link with buyers via WhatsApp/email.
+    7. As plots are sold, the agent updates status in the dashboard.
+    8. The public map and shared link update in real-time.
+    9. All 5 stakeholders see the financial impact in their ledger.
+
+
+5. QUANTITATIVE SUMMARY (for pricing reference)
+================================================================================
+
+  TOTAL SOURCE FILES (excluding node_modules, .git):
+    Client Frontend     :  23 files  |  ~121 KB of source code
+    Dealflow Dashboard  : 130 files  |  ~585 KB of source code
+    Backend Server      :   6 files  |  ~119 KB of source code
+    -----------------------------------------------------------
+    TOTAL               : 159 files  |  ~825 KB of source code
+
+  PAGES / SCREENS BUILT:
+    Client Frontend     :  2 pages  (Public View + Admin Digitizer)
+    Dealflow Dashboard  : 24 pages  (full CRM dashboard)
+    -----------------------------------------------------------
+    TOTAL               : 26 unique pages/screens
+
+  CUSTOM COMPONENTS BUILT:
+    Client Frontend     : 12 components
+    Dealflow Dashboard  : 83 components (including 49 Shadcn UI base)
+    -----------------------------------------------------------
+    TOTAL               : 95 components
+
+  UNIQUE FEATURES IMPLEMENTED:
+    - Interactive SVG polygon rendering over raster background
+    - Click-to-draw polygon digitization tool
+    - Real-time plot status color coding (7 statuses)
+    - Zoom (0.4x - 4x) and pan with smooth CSS transitions
+    - Sub-pixel coordinate capture and storage
+    - PDF-to-image processing pipeline (3 libraries)
+    - Plot filtering by status, type, and facing direction
+    - Site visit scheduling modal with form submission
+    - Inventory report (tabular view of all plots)
+    - Google Maps location integration
+    - Deal pipeline management (Kanban-style)
+    - Commission tracking and calculation engine
+    - Both-side financial ledger and reporting
+    - Payment management (schedule, received, pending)
+    - Lead management and status tracking
+    - Finder fee calculations
+    - Document management system
+    - Land area unit conversion calculators
+    - User authentication (Supabase Auth)
+    - Role-based route protection
+    - Dark/light theme toggle
+    - Real-time notification system
+    - Global search across all data
+    - Animated UI elements (Framer Motion)
+    - Responsive design (mobile + desktop)
+    - Vercel deployment with SPA routing
+
+  THIRD-PARTY INTEGRATIONS:
+    - Supabase (PostgreSQL database + authentication)
+    - Vercel (hosting and deployment)
+    - Google Maps (location view)
+    - Recharts (data visualization / charts)
+    - TanStack React Query (server state management)
+    - Framer Motion (animations)
+    - Zod (runtime data validation)
+
+  DEPLOYMENT STATUS:
+    - Vercel deployment configured and ready.
+    - Supabase backend connected.
+    - Application is functional as a working MVP.
+
+================================================================================
+                          END OF REPORT
+================================================================================

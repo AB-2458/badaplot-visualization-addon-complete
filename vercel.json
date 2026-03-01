@@ -1,0 +1,10 @@
+{
+    "buildCommand": "cd dealflow-dashboard && npm install && npm run build",
+    "outputDirectory": "dealflow-dashboard/dist",
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "destination": "/index.html"
+        }
+    ]
+}

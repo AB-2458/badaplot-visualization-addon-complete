@@ -10,7 +10,7 @@ A powerful real estate plot visualization and management system that allows deve
 - **Pan & Zoom**: Navigate large plot layouts with smooth pan and zoom controls
 - **Plot Configuration**: Assign plot numbers, sizes, status, facing direction, and pricing
 - **Real-time Preview**: See plots rendered as you create them
-- **Export/Save**: Save digitized data for use in public view
+- **Export/Save**: Save digitized data to Supabase database
 
 ### Public Visualization (`/`)
 - **Interactive Plot Map**: Clickable plots with real-time availability status
@@ -19,39 +19,58 @@ A powerful real estate plot visualization and management system that allows deve
 - **Status Bar**: Live summary of total plots and availability
 - **Inventory Report**: Comprehensive table view of all plots
 - **Filter System**: Filter plots by status, facing, and type
-- **Schedule Visit**: Built-in scheduling modal for site visits
+- **Schedule Visit & Enquiry Forms**: Capture buyer interest directly into the CRM
+- **Gallery & Media Link**: Full project gallery including site pictures
+- **Share Function**: Share direct deep-links or send details to WhatsApp
 - **Location Map**: Integrated map view for project location
 - **Responsive Design**: Works seamlessly on mobile and desktop
+
+### Dealflow CRM Dashboard (`dealflow-dashboard/`)
+- **Interactive Analytics**: Overview of total plots, revenue metrics, available plots, and deals
+- **Real-time Sync**: Synced to Supabase to instantly reflect new digitized plots
+- **24 Views & Pages**: Comprehensive management interface including:
+  - Inventory reports and lists
+  - Pipeline deals tracker
+  - Lead management and forms
+  - Broker CRM and analytics
 
 ## 🛠️ Tech Stack
 
 | Layer | Technology |
 |-------|------------|
-| Frontend | React + Vite |
-| Styling | Tailwind CSS |
+| Frontend | React + Vite + TypeScript (Dashboard) |
+| Styling | Tailwind CSS + Shadcn UI |
 | Routing | React Router DOM |
-| Backend | Node.js + Express |
-| Storage | LocalStorage (Supabase-ready) |
+| Backend | Node.js + Express (Optional) |
+| Storage | Supabase (PostgreSQL) + Realtime |
+| Charts | Recharts (Dashboard) |
 
 ## 📁 Project Structure
 
 ```
 Badaplot/
-├── client/                 # React frontend
+├── client/                 # React frontend (Public View & Admin Digitizer)
 │   ├── src/
 │   │   ├── components/     # Reusable UI components
 │   │   │   ├── layout/     # Header, StatusBar, BottomNav
-│   │   │   ├── map/        # PlotLayout, PlotCanvas
-│   │   │   ├── modals/     # PlotModal, FilterModal, ScheduleVisitModal
+│   │   │   ├── map/        # PlotLayout, PlotElement
+│   │   │   ├── modals/     # PlotModal, EnquiryModal, ShareModal
 │   │   │   └── views/      # InventoryReport, DetailsPanel, LocationMap
-│   │   ├── pages/
-│   │   │   ├── PublicView.jsx      # Customer-facing plot view
-│   │   │   └── AdminDigitize.jsx   # Admin plot digitization tool
-│   │   └── App.jsx         # Main app with routing
+│   │   ├── lib/            # Supabase client & Types
+│   │   ├── pages/          # PublicView.jsx, AdminDigitize.jsx
+│   │   └── App.jsx
 │   └── package.json
-├── server/                 # Express backend
+├── dealflow-dashboard/     # React + TS CRM Dashboard
+│   ├── src/
+│   │   ├── components/     # UI components (Shadcn + Plot layout viewer)
+│   │   ├── pages/          # 24 different dashboard pages
+│   │   └── lib/            # Types, utilities, and Supabase client
+│   └── package.json
+├── server/                 # Express backend / Seeding Scripts
 │   ├── data/
 │   │   └── samplePlots.json
+│   ├── supabase_migration.sql # Database schema with RLS
+│   ├── seed.js             # Supabase seeder
 │   └── index.js
 └── README.md
 ```
@@ -82,25 +101,35 @@ Badaplot/
    npm install
    ```
 
+3. **Set up Supabase Configuration**
+   - Create a `.env` file in both `client/` and `dealflow-dashboard/`
+   - Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to both
+   - In `server/.env`, add your `VITE_SUPABASE_SERVICE_ROLE_KEY` to seed the database
+
+4. **Seed Database**
+   - Head to Supabase SQL editor and execute `server/supabase_migration.sql`
+   - Run `node server/seed.js` to insert sample data
+
 ### Running the Application
 
-1. **Start the backend server**
-   ```bash
-   cd server
-   node index.js
-   # Server runs on http://localhost:3001
-   ```
-
-2. **Start the frontend dev server**
+1. **Start the frontend dev server (Public/Admin View)**
    ```bash
    cd client
    npm run dev
    # App runs on http://localhost:5173
    ```
 
+2. **Start the Dealflow CRM Dashboard**
+   ```bash
+   cd dealflow-dashboard
+   npm run dev
+   # App runs on http://localhost:5174
+   ```
+
 3. **Open in browser**
    - Public View: `http://localhost:5173/`
    - Admin Digitizer: `http://localhost:5173/admin`
+   - Dealflow Dashboard: `http://localhost:5174/`
 
 ## 📖 Usage
 
@@ -128,10 +157,12 @@ Badaplot/
 
 | Status | Color |
 |--------|-------|
-| Available | Green |
-| Sold | Red |
-| Reserved | Orange |
-| On Hold | Yellow |
+| Available | Green (`#16a34a`) |
+| Sold | Red (`#dc2626`) |
+| Tentatively Booked | Blue (`#2563eb`) |
+| Hold | Amber (`#d97706`) |
+| Registered | Purple (`#7e22ce`) |
+| Mortgaged | Slate (`#475569`) |
 
 ## 📄 License
 

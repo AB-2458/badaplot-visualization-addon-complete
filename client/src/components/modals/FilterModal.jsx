@@ -30,27 +30,24 @@ export default function FilterModal({ onClose, onApply, initialFilters = {} }) {
     };
 
     return (
-        <div className="modal-backdrop" onClick={onClose}>
-            <div
-                className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4"
-                onClick={(e) => e.stopPropagation()}
-            >
+        <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm" onClick={onClose}>
+            <div className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border border-border bg-card p-6 shadow-lg duration-200 sm:rounded-xl" onClick={(e) => e.stopPropagation()}>
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                    <h2 className="text-lg font-bold text-gray-900">Filter Plots</h2>
+                <div className="flex items-center justify-between border-b border-border pb-4">
+                    <h2 className="text-lg font-bold text-card-foreground">Filter Plots</h2>
                     <button
                         onClick={onClose}
-                        className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        className="p-2 hover:bg-muted rounded-full transition-colors"
                     >
-                        <X className="w-5 h-5 text-gray-500" />
+                        <X className="w-5 h-5 text-muted-foreground" />
                     </button>
                 </div>
 
                 {/* Content */}
-                <div className="p-4 space-y-4">
+                <div className="space-y-4">
                     {/* Unit Numbers */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-muted-foreground mb-1">
                             Unit numbers
                         </label>
                         <input
@@ -58,19 +55,19 @@ export default function FilterModal({ onClose, onApply, initialFilters = {} }) {
                             placeholder="Plot numbers (Eg : 1,24)"
                             value={filters.unitNumbers}
                             onChange={(e) => setFilters(prev => ({ ...prev, unitNumbers: e.target.value }))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                            className="w-full px-3 py-2 bg-background border border-input rounded-md text-foreground focus:ring-2 focus:ring-ring focus:outline-none"
                         />
                     </div>
 
                     {/* Facing */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-muted-foreground mb-1">
                             Facing
                         </label>
                         <select
                             value={filters.facing}
                             onChange={(e) => setFilters(prev => ({ ...prev, facing: e.target.value }))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                            className="w-full px-3 py-2 bg-background border border-input rounded-md text-foreground focus:ring-2 focus:ring-ring focus:outline-none"
                         >
                             {facingOptions.map(opt => (
                                 <option key={opt} value={opt}>{opt}</option>
@@ -80,13 +77,13 @@ export default function FilterModal({ onClose, onApply, initialFilters = {} }) {
 
                     {/* Status */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-muted-foreground mb-1">
                             Status
                         </label>
                         <select
                             value={filters.status}
                             onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                            className="w-full px-3 py-2 bg-background border border-input rounded-md text-foreground focus:ring-2 focus:ring-ring focus:outline-none"
                         >
                             <option value="All">All</option>
                             {statusLabels.map(status => (
@@ -97,13 +94,13 @@ export default function FilterModal({ onClose, onApply, initialFilters = {} }) {
 
                     {/* Type / Category */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-muted-foreground mb-1">
                             Type / Category
                         </label>
                         <select
                             value={filters.type}
                             onChange={(e) => setFilters(prev => ({ ...prev, type: e.target.value }))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                            className="w-full px-3 py-2 bg-background border border-input rounded-md text-foreground focus:ring-2 focus:ring-ring focus:outline-none"
                         >
                             {typeOptions.map(opt => (
                                 <option key={opt} value={opt}>{opt}</option>
@@ -113,16 +110,16 @@ export default function FilterModal({ onClose, onApply, initialFilters = {} }) {
                 </div>
 
                 {/* Footer */}
-                <div className="p-4 bg-gray-50 border-t border-gray-200 flex gap-3">
+                <div className="pt-4 border-t border-border flex gap-3">
                     <button
                         onClick={handleReset}
-                        className="flex-1 btn-success"
+                        className="flex-1 px-4 py-2 border border-border bg-background hover:bg-muted text-foreground rounded-lg font-medium transition-colors"
                     >
                         RESET
                     </button>
                     <button
                         onClick={handleApply}
-                        className="flex-1 btn-primary"
+                        className="flex-1 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium transition-colors"
                     >
                         FILTER
                     </button>
