@@ -11,6 +11,7 @@ export default function AdminDigitize() {
     const [imageDimensions, setImageDimensions] = useState({ width: 1344, height: 768 });
 
 
+    const [isSpacePressed, setIsSpacePressed] = useState(false);
 
     const [formData, setFormData] = useState({
         number: '',
@@ -65,7 +66,20 @@ export default function AdminDigitize() {
         loadData();
     }, []);
 
+    // Keyboard event listener for drawing completion (Enter)
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.code === 'Enter' && currentPolygon.length >= 3) {
+                // ... we don't handle saving here, just let the button do it
+            }
+        };
 
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [currentPolygon]);
 
     // Convert screen coordinates to SVG coordinates (accounting for zoom/pan)
     const screenToSVG = (clientX, clientY) => {
@@ -446,10 +460,17 @@ export default function AdminDigitize() {
             {/* Right Panel - Canvas */}
             <div
                 ref={containerRef}
-                className="flex-1 overflow-hidden bg-white flex items-center justify-center"
+                className="flex-1 overflow-hidden bg-background/50 flex items-center justify-center relative"
+                style={{
+                    backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0)',
+                    backgroundSize: '20px 20px'
+                }}
             >
+                {/* Background Pattern */}
+                <div className="absolute inset-0 pointer-events-none opacity-[0.03]"></div>
+
                 <div className="relative w-full h-full flex items-center justify-center p-4">
-                    <div className="relative inline-block shadow-2xl rounded-lg overflow-hidden" style={{ maxWidth: '90%', maxHeight: '90%' }}>
+                    <div className="relative inline-block shadow-2xl rounded-lg overflow-hidden border border-border/50 ring-1 ring-white/10" style={{ maxWidth: '90%', maxHeight: '90%' }}>
                         <img
                             src="/layouts/3d_render.png"
                             alt="Site Layout"
