@@ -1,0 +1,13 @@
+{
+  "name": "badaplot-root",
+  "private": true,
+  "scripts": {
+    "dev": "cd client && npm run dev",
+    "build": "cd client && npm run build",
+    "lint": "cd client && npm run lint"
+  },
+  "dependencies": {
+    "image-size": "^2.0.2",
+    "puppeteer-core": "^24.36.1"
+  }
+}
