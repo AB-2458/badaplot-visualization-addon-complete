@@ -1,9 +1,6 @@
-import express from 'express';
-import cors from 'cors';
-import path from 'path';
-import { createRequire } from 'module';
-
-const require = createRequire(import.meta.url);
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
 const sampleData = require('./data/samplePlots.json');
 
 const app = express();
